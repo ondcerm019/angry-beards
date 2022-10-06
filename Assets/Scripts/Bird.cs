@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,6 +31,7 @@ public class Bird : MonoBehaviour
 
     void OnMouseDown()
     {
+        Debug.Log("kliknutí");
         _spriteRenderer.color = Color.red;
     }
 
@@ -37,7 +39,7 @@ public class Bird : MonoBehaviour
     {
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 desiredPosition = mousePosition;
-        _distance = desiredPosition - _startPosition;
+        _distance = _startPosition - desiredPosition;
         _distance.Normalize();
 
     }
@@ -53,5 +55,20 @@ public class Bird : MonoBehaviour
     void Update()
     {
         
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        StartCoroutine(Die());
+
+
+    }
+
+    private IEnumerator Die()
+    {
+        yield return new WaitForSecondsRealtime(3);
+        _rigidBody2D.isKinematic = true;
+        _rigidBody2D.velocity = Vector2.zero;
+        transform.position = _startPosition;
     }
 }
